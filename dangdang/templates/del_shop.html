@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script>
+        if (flag==='1'){
+            $('#del_shop').attr('style','')
+        } else {
+            $('#del_shop').attr('style','dispalay:none')
+        }
+    </script>
+</head>
+<body>
+<div id="box" class="w960" >
+<div class="add_line" id="district" style="width: 960px;border-top: 2px darkred solid; " >
+    <div class="w960">
+        <div class="address" id="dp_adress">
+            <span class="icon_adr">&nbsp;</span><span style="color: darkred">已删除商品：</span>
+            <!--<a href="#" class="tip"></a>-->
+        </div>
+    </div>
+</div>
+<div class="w960" id="cart" style="">
+    <ul class="shopping_title" id="j_carttitle">
+        <li class="f1"><a id="j_selectall" href="javascript:void(0)" class="checknow fn-checkall check_on" dd_name="全选">选中</a>全选</li>
+        <li class="f2">商品信息</li>
+        <li class="f3">单价（元）</li>
+        <li class="f4">数量</li>
+        <li class="f4">金额（元）</li>
+        <li class="f5">操作</li>
+    </ul>
+    <div class="fn-shops" id="J_cartContent"><div class="fn-shop">
+        <table border="0" cellspacing="0" cellpadding="0" class="shop_title">
+            <tbody>
+            <tr>
+                <td><a href="javascript:void(0)" dd_name="选中店铺" class="checknow fn-shop-checkall check_on">选中</a></td>
+                <td><span class="shop_icon"></span></td>
+                <td><a href="http://www.dangdang.com" target="_blank" style="color: darkgray">当当自营</a></td>
+                <td></td> <td></td> </tr>
+            </tbody></table>
+        <div class="shopping_list">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody data-stock="22388" data-offline="false" data-productid="24147882" data-timestamp="1484488454000" data-orderforspupormo="0">
+            {% for i in car_re.car_item %}
+                 <tr id="tr_424893864" class="  ">
+                <td class="row1"> <a href="javascript:void(0)" data-item="424893864" class="fn-product-check checknow check_on">选中</a> </td>
+                <td class="row_img"> <a href="{% url 'bookshow:bookdetails' %}?id={{ i.book.id }}" target="_blank" dd_name="查看详情"> <img onmouseout="$(this).parent().next().hide()" onmouseover="$(this).parent().next().show()" src="{% static i.book.pic %}" width="80" height="80"> </a> <div style="display: none;" class="img_big"><a href="{% url 'bookshow:bookdetails' %}?id={{ i.book.id }}" dd_name="查看详情" target="_blank"><img src="{% static i.book.pic %}" width="200px" height="200px"></a><span class="arrow"></span></div> </td>
+                <td class="row_name"> <div class="name"> <a href="http://product.dangdang.com/24147882.html" title="跟乐嘉学性格色彩2（乐嘉2017年全新力作）" target="_blank" dd_name="查看详情" style="word-break:break-all;  word-wrap:break-word;color: darkgray">{{ i.book.content_val }}</a></div>      </td>
+                <td class="row3"><span>￥<span id="sp_b">{{ i.book.dangdang_price }}</span></span></td>
+                <td data-minbuy="0" class="fn-count-tip row3 ">
+                    <span class="amount fn-updatecount " data-value="1">
+                     <span data-value="1" class="in_a" >{{ i.number }}</span>
+                     <input type="hidden" value="{{ i.book.id }}" class="i_id">
+                     </span>
+                </td>
+                <td ><span style="color: darkgray">￥<span id="spn_a" class="sp_a">{% widthratio i.book.dangdang_price 1 i.number %} </span></span></td>
+                <td class="row5 "><span><a href="javascript:void(0)" data-item="424893864" class="fn-add-wish" dd_name="恢复删除按钮">恢复删除</a></span></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<script>
+    $('.fn-add-wish').each(function () {
+        $(this).click(function () {
+            $.ajax({
+                type:'get',
+                url:'{% url "shop_car:re_savelogic" %}',
+                data:'id='+$(this).parent().parent().prev().prev().children().children('.i_id').val()+'&number='+$(this).parent().parent().prev().prev().children().children('.in_a').html(),
+                success:function (res) {
+                    if (res){
+                        $('#show_shop').load('{% url "shop_car:show_shop" %}')
+                        $('#del_shop').load('{% url "shop_car:re_del" %}')
+                    }
+                }
+            })
+        })
+    })
+</script>
+<script>
+    var a={{ flag }}
+    console.log('111111111111',a)
+    if (a===0) {
+        $('#del_shop').css('display','none')
+        $('#d_hr').css('display','none')
+    }else {
+        $('#del_shop').css('display','block')
+        $('#d_hr').css('display','block')
+    }
+</script>
+</body>
+</html>
